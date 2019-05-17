@@ -1,5 +1,7 @@
 package com.elastic.sample.elastic.Controller;
 
+import com.example.elasticsearch.model.User;
+
 import org.elasticsearch.action.delete.DeleteResponse;
 import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.action.index.IndexResponse;
@@ -30,7 +32,7 @@ public class UserController {
     @Autowired
     Client client;
     @PostMapping("/create")
-    public String create(@RequestBody com.example.elasticsearch.model.User user) throws IOException {
+    public String create(@RequestBody User user) throws IOException {
         IndexResponse response = client.prepareIndex("users", "employee", user.getUserId())
                 .setSource(jsonBuilder()
                         .startObject()
@@ -54,7 +56,7 @@ public class UserController {
         Map<String,Object> map = null;
         SearchResponse response = client.prepareSearch("users")
                 .setTypes("employee")
-                .setSearchType(SearchType.QUERY_AND_FETCH)
+                .setSearchType(SearchType.QUERY_THEN_FETCH)
                 .setQuery(QueryBuilders.matchQuery("name", field))
                                 .get()
         ;
@@ -71,7 +73,7 @@ public class UserController {
                 .id(id)
                 .doc(jsonBuilder()
                         .startObject()
-                        .field("name", "Rajesh")
+                        .field("name", "Ian")
                         .endObject());
         try {
             UpdateResponse updateResponse = client.update(updateRequest).get();
